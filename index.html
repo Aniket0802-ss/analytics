@@ -1,0 +1,374 @@
+import { useState } from "react";
+import { DashboardHeader } from "@/components/DashboardHeader";
+import { TabNavigation } from "@/components/TabNavigation";
+import { KPICard } from "@/components/KPICard";
+import { ChartCard } from "@/components/ChartCard";
+import { ComplianceCard } from "@/components/ComplianceCard";
+import { DateRangePicker } from "@/components/DateRangePicker";
+import { ExportButton } from "@/components/ExportButton";
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { TrendingUp, DollarSign, Users, Package } from "lucide-react";
+
+const gstinOptions = [
+  { value: "29AABCD1234E1Z5", label: "29AABCD1234E1Z5 (Karnataka)" },
+  { value: "27AABCD1234E1Z5", label: "27AABCD1234E1Z5 (Maharashtra)" },
+];
+
+const tabs = [
+  { id: "overview", label: "Financial Overview" },
+  { id: "trends", label: "Month-Wise Trends" },
+  { id: "analysis", label: "Customer & Supplier Analysis" },
+];
+
+const monthlyData = [
+  { month: "Apr", turnover: 1250000, purchases: 890000, margin: 28.8 },
+  { month: "May", turnover: 1380000, purchases: 950000, margin: 31.2 },
+  { month: "Jun", turnover: 1420000, purchases: 980000, margin: 31.0 },
+  { month: "Jul", turnover: 1550000, purchases: 1050000, margin: 32.3 },
+  { month: "Aug", turnover: 1480000, purchases: 1020000, margin: 31.1 },
+  { month: "Sep", turnover: 1620000, purchases: 1100000, margin: 32.1 },
+  { month: "Oct", turnover: 1580000, purchases: 1080000, margin: 31.6 },
+  { month: "Nov", turnover: 1720000, purchases: 1150000, margin: 33.1 },
+  { month: "Dec", turnover: 1850000, purchases: 1230000, margin: 33.5 },
+  { month: "Jan", turnover: 1780000, purchases: 1200000, margin: 32.6 },
+  { month: "Feb", turnover: 1680000, purchases: 1140000, margin: 32.1 },
+  { month: "Mar", turnover: 2100000, purchases: 1400000, margin: 33.3 },
+];
+
+const gstTrendData = [
+  { month: "Apr", liability: 225000, itc: 160200 },
+  { month: "May", liability: 248400, itc: 171000 },
+  { month: "Jun", liability: 255600, itc: 176400 },
+  { month: "Jul", liability: 279000, itc: 189000 },
+  { month: "Aug", liability: 266400, itc: 183600 },
+  { month: "Sep", liability: 291600, itc: 198000 },
+  { month: "Oct", liability: 284400, itc: 194400 },
+  { month: "Nov", liability: 309600, itc: 207000 },
+  { month: "Dec", liability: 333000, itc: 221400 },
+  { month: "Jan", liability: 320400, itc: 216000 },
+  { month: "Feb", liability: 302400, itc: 205200 },
+  { month: "Mar", liability: 378000, itc: 252000 },
+];
+
+const stateData = [
+  { name: "Karnataka", value: 35 },
+  { name: "Maharashtra", value: 25 },
+  { name: "Tamil Nadu", value: 18 },
+  { name: "Delhi", value: 12 },
+  { name: "Others", value: 10 },
+];
+
+const COLORS = ["hsl(217, 91%, 60%)", "hsl(243, 75%, 59%)", "hsl(142, 71%, 45%)", "hsl(38, 92%, 50%)", "hsl(0, 72%, 51%)"];
+
+const topCustomers = [
+  { name: "Tech Solutions Pvt Ltd", gstin: "29AABCT1234E1Z5", revenue: "₹4.2L", transactions: 48 },
+  { name: "Digital Enterprises", gstin: "27AABDE1234E1Z5", revenue: "₹3.8L", transactions: 42 },
+  { name: "Innovation Systems", gstin: "33AABIS1234E1Z5", revenue: "₹3.5L", transactions: 38 },
+  { name: "Smart Tech India", gstin: "29AABST1234E1Z5", revenue: "₹2.9L", transactions: 35 },
+  { name: "Future Digital Ltd", gstin: "19AABFD1234E1Z5", revenue: "₹2.6L", transactions: 31 },
+];
+
+const topSuppliers = [
+  { name: "Global Hardware Corp", gstin: "29AABGH1234E1Z5", spend: "₹5.6L", transactions: 52 },
+  { name: "Software Distributors", gstin: "27AABSD1234E1Z5", spend: "₹4.8L", transactions: 45 },
+  { name: "Components Supply Co", gstin: "33AABCS1234E1Z5", spend: "₹4.2L", transactions: 41 },
+  { name: "Tech Parts India", gstin: "29AABTP1234E1Z5", spend: "₹3.5L", transactions: 38 },
+  { name: "Electronics Hub Ltd", gstin: "19AABEH1234E1Z5", spend: "₹3.1L", transactions: 34 },
+];
+
+const Index = () => {
+  const [selectedGSTIN, setSelectedGSTIN] = useState(gstinOptions[0].value);
+  const [activeTab, setActiveTab] = useState("overview");
+
+  return (
+    <div className="min-h-screen bg-background">
+      <DashboardHeader
+        selectedGSTIN={selectedGSTIN}
+        onGSTINChange={setSelectedGSTIN}
+        gstinOptions={gstinOptions}
+      />
+      
+      <TabNavigation tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+
+      <main className="p-4 md:p-8 max-w-7xl mx-auto">
+        {/* Filters and Export */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <DateRangePicker onDateChange={(from, to) => console.log('Date range:', from, to)} />
+          <ExportButton />
+        </div>
+
+        {activeTab === "overview" && (
+          <div className="space-y-10">
+            {/* KPI Cards Section */}
+            <section>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Key Financial Metrics</h2>
+              <p className="text-muted-foreground mb-6">
+                High-level summary of financial performance for FY 2023-24, comparing against previous year.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <KPICard
+                  title="Total Turnover"
+                  value="₹19.41 Cr"
+                  trend={15.8}
+                  trendLabel="YoY"
+                  icon={<DollarSign className="h-6 w-6" />}
+                />
+                <KPICard
+                  title="Gross Margin"
+                  value="31.8%"
+                  trend={2.4}
+                  trendLabel="YoY"
+                  icon={<TrendingUp className="h-6 w-6" />}
+                />
+                <KPICard
+                  title="ITC Available"
+                  value="₹23.5 Lac"
+                  trend={12.3}
+                  trendLabel="YoY"
+                  icon={<Package className="h-6 w-6" />}
+                />
+                <KPICard
+                  title="Active Suppliers"
+                  value="248"
+                  trend={8.7}
+                  trendLabel="YoY"
+                  icon={<Users className="h-6 w-6" />}
+                />
+              </div>
+            </section>
+
+            {/* Charts Section */}
+            <section>
+              <h2 className="text-2xl font-bold text-foreground mb-2">
+                Yearly Comparison: Turnover, Purchases & Margin
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Monthly trends in sales and procurement, with gross margin evolution.
+              </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <ChartCard title="Turnover vs Purchases (FY 23-24)">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={monthlyData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
+                      <YAxis stroke="hsl(var(--muted-foreground))" />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--card))",
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: "8px",
+                        }}
+                      />
+                      <Legend />
+                      <Bar dataKey="turnover" fill="hsl(var(--primary))" name="Turnover (₹)" radius={[8, 8, 0, 0]} />
+                      <Bar dataKey="purchases" fill="hsl(var(--primary-dark))" name="Purchases (₹)" radius={[8, 8, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartCard>
+
+                <ChartCard title="Gross Margin % Trend">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={monthlyData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
+                      <YAxis stroke="hsl(var(--muted-foreground))" />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--card))",
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: "8px",
+                        }}
+                      />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="margin"
+                        stroke="hsl(var(--success))"
+                        strokeWidth={3}
+                        name="Margin %"
+                        dot={{ fill: "hsl(var(--success))", r: 5 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartCard>
+              </div>
+            </section>
+          </div>
+        )}
+
+        {activeTab === "trends" && (
+          <div className="space-y-10">
+            {/* GST Trend Chart */}
+            <section>
+              <h2 className="text-2xl font-bold text-foreground mb-2">GST Liability vs. ITC Trend</h2>
+              <p className="text-muted-foreground mb-6">
+                Monthly relationship between GST liability and Input Tax Credit.
+              </p>
+              <ChartCard title="GST Liability vs ITC (FY 23-24)">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={gstTrendData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
+                    <YAxis stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "8px",
+                      }}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="liability"
+                      stroke="hsl(var(--destructive))"
+                      strokeWidth={3}
+                      name="GST Liability (₹)"
+                      dot={{ fill: "hsl(var(--destructive))", r: 5 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="itc"
+                      stroke="hsl(var(--success))"
+                      strokeWidth={3}
+                      name="ITC Available (₹)"
+                      dot={{ fill: "hsl(var(--success))", r: 5 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartCard>
+            </section>
+
+            {/* Compliance Scorecard */}
+            <section>
+              <h2 className="text-2xl font-bold text-foreground mb-2">
+                Compliance Scorecard (FY 23-24)
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Summary of filing discipline and tax payment behavior.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <ComplianceCard
+                  title="GSTR-1 Delayed Filings"
+                  value="4"
+                  subtitle="Out of 12 periods"
+                  borderColor="yellow"
+                />
+                <ComplianceCard
+                  title="Tax Paid via ITC"
+                  value="68%"
+                  subtitle="Optimal utilization"
+                  borderColor="green"
+                />
+                <ComplianceCard
+                  title="On-time Filing Rate"
+                  value="67%"
+                  subtitle="8/12 returns"
+                  borderColor="blue"
+                />
+              </div>
+            </section>
+          </div>
+        )}
+
+        {activeTab === "analysis" && (
+          <div className="space-y-10">
+            {/* Top Customers */}
+            <section>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Top 5 Customers</h2>
+              <p className="text-muted-foreground mb-6">
+                Highest revenue generating customers for FY 2023-24.
+              </p>
+              <div className="bg-card rounded-xl shadow-lg overflow-hidden border">
+                <table className="w-full">
+                  <thead className="bg-muted">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Customer Name</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">GSTIN</th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">Revenue</th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">Transactions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {topCustomers.map((customer, index) => (
+                      <tr key={index} className="hover:bg-muted/50 transition-colors">
+                        <td className="px-6 py-4 text-sm font-medium text-foreground">{customer.name}</td>
+                        <td className="px-6 py-4 text-sm text-muted-foreground font-mono">{customer.gstin}</td>
+                        <td className="px-6 py-4 text-sm text-right font-semibold text-success">{customer.revenue}</td>
+                        <td className="px-6 py-4 text-sm text-right text-muted-foreground">{customer.transactions}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* Top Suppliers & State Distribution */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <section>
+                <h2 className="text-2xl font-bold text-foreground mb-2">Top 5 Suppliers</h2>
+                <p className="text-muted-foreground mb-6">
+                  Highest spend suppliers for FY 2023-24.
+                </p>
+                <div className="bg-card rounded-xl shadow-lg overflow-hidden border">
+                  <table className="w-full">
+                    <thead className="bg-muted">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-semibold text-foreground">Supplier</th>
+                        <th className="px-4 py-3 text-right text-xs font-semibold text-foreground">Spend</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {topSuppliers.map((supplier, index) => (
+                        <tr key={index} className="hover:bg-muted/50 transition-colors">
+                          <td className="px-4 py-3 text-sm text-foreground">{supplier.name}</td>
+                          <td className="px-4 py-3 text-sm text-right font-semibold text-destructive">{supplier.spend}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-foreground mb-2">State-wise Distribution</h2>
+                <p className="text-muted-foreground mb-6">
+                  Sales breakdown by state.
+                </p>
+                <ChartCard title="Sales Distribution by State">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={stateData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={100}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {stateData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--card))",
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </ChartCard>
+              </section>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default Index;
