@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GST Analytics Dashboard (Final Interactive)</title>
+    <title>GST Analytics Dashboard (Final with ALL Filters)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,8 +39,8 @@
         .modal-enter-active { opacity: 1; transform: scale(1); }
         .modal-leave-active { opacity: 0; transform: scale(0.95); transition: all 300ms ease-in; }
 
-        /* Style for date inputs to look clean */
-        .date-input {
+        /* Style for date and select inputs to look clean */
+        .filter-input {
             appearance: none;
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -55,12 +55,12 @@
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
             cursor: pointer;
         }
-        .date-input:focus {
+        .filter-input:focus {
             outline: none;
             border-color: #60A5FA; /* blue-400 */
             box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.5); /* ring-blue-300 */
         }
-        .dark .date-input {
+        .dark .filter-input {
             background-color: #2c2c2c;
             color: #E5E5E5;
             border-color: #444;
@@ -80,11 +80,35 @@
                     
                     <div class="flex items-center text-sm">
                         <label for="from-date" class="font-medium mr-2">From:</label>
-                        <input type="date" id="from-date" class="date-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50" value="2023-04-01">
+                        <input type="date" id="from-date" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50" value="2023-04-01">
                         
                         <label for="to-date" class="font-medium ml-4 mr-2">To:</label>
-                        <input type="date" id="to-date" class="date-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50" value="2024-03-31">
+                        <input type="date" id="to-date" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50" value="2024-03-31">
                     </div>
+                    
+                    <div class="flex items-center text-sm space-x-4">
+                        <select id="type-filter" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50">
+                            <option value="all">Type: All Transactions</option>
+                            <option value="b2b">B2B Sales/Purchases</option>
+                            <option value="b2c">B2C Sales</option>
+                            <option value="cn/dn">Credit/Debit Notes</option>
+                            <option value="export">Exports</option>
+                        </select>
+
+                        <select id="rate-filter" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50">
+                            <option value="all">Rate: All GST</option>
+                            <option value="18">18%</option>
+                            <option value="12">12%</option>
+                            <option value="5">5%</option>
+                        </select>
+
+                        <select id="hsn-filter" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50">
+                            <option value="all">HSN/SAC: All Codes</option>
+                            <option value="9983">9983 (IT Services)</option>
+                            <option value="8471">8471 (Hardware)</option>
+                        </select>
+                    </div>
+
                     <button id="alert-btn" class="relative p-2 rounded-full hover:bg-white/10 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.476 6.136 6 8.447 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a2 2 0 100 4 2 2 0 000-4zm-6 0a2 2 0 100 4 2 2 0 000-4z"></path></svg>
                         <span id="alert-badge" class="absolute top-1 right-1 h-3 w-3 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center opacity-0 transition-opacity"></span>
@@ -93,7 +117,7 @@
                         <svg id="sun-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         <svg id="moon-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                     </button>
-                    <select id="gstin-select" class="bg-white text-gray-800 p-2 rounded-lg text-sm shadow-inner focus:ring-blue-300 focus:border-blue-300">
+                    <select id="gstin-select" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50">
                         </select>
                 </div>
             </div>
@@ -110,7 +134,7 @@
                 <div class="mb-10">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">Key Financial Metrics</h2>
                     <p id="overview-period" class="text-lg font-semibold text-blue-600 mb-4">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
-                    <p class="text-gray-600 mb-6 transition-colors duration-500">This section provides a high-level summary of the company's financial performance, comparing key indicators against the previous year to highlight growth and areas of interest.</p>
+                    <p class="text-gray-600 mb-6 transition-colors duration-500">This summary reflects the cumulative effect of current filters (Date, GSTIN, Type, Rate, HSN/SAC).</p>
                     <div id="kpi-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         </div>
                 </div>
@@ -139,7 +163,7 @@
                 <div class="mb-10">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">GST Liability vs. ITC Trend</h2>
                     <p class="text-lg font-semibold text-blue-600 mb-4">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
-                    <p class="text-gray-600 mb-6 transition-colors duration-500">This chart illustrates the monthly relationship between GST liability (tax owed) and the Input Tax Credit (ITC) available. Understanding this trend is key to managing cash flow and tax efficiency.</p>
+                    <p class="text-gray-600 mb-6 transition-colors duration-500">This chart illustrates the monthly relationship between GST liability (tax owed) and the Input Tax Credit (ITC) available.</p>
                     <div class="bg-white p-4 md:p-6 rounded-xl shadow-lg transition-colors duration-500">
                         <div class="chart-container">
                             <canvas id="gstTrendChart"></canvas>
@@ -149,7 +173,7 @@
 
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">Compliance Scorecard</h2>
-                    <p class="text-gray-600 mb-6 transition-colors duration-500">A summary of the company's filing discipline and tax payment behavior. This scorecard highlights adherence to GST return filing deadlines and the balance between tax paid via cash versus ITC.</p>
+                    <p class="text-gray-600 mb-6 transition-colors duration-500">A summary of filing discipline and tax payment behavior for the selected period.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500 transition-colors duration-500">
                             <h3 class="text-md font-medium text-gray-500 mb-2 transition-colors duration-500">GSTR-1 Delayed Filings</h3>
@@ -174,7 +198,7 @@
                 <div class="mb-10">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">Top Customers & Suppliers</h2>
                     <p class="text-lg font-semibold text-blue-600 mb-4">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
-                    <p class="text-gray-600 mb-6 transition-colors duration-500">Identify the key business partners driving the company's revenue and supply chain. These tables list the top customers by supply value and top suppliers by purchase value for the fiscal year.</p>
+                    <p class="text-gray-600 mb-6 transition-colors duration-500">Key business partners filtered by the selected criteria.</p>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto transition-colors duration-500">
                             <h3 class="text-xl font-semibold text-gray-700 mb-4 transition-colors duration-500">Top Customers (by Supply Value)</h3>
@@ -183,24 +207,29 @@
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Name</th>
                                         <th class="px-6 py-3 text-right text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Supply Value (₹)</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Risk Status</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200 transition-colors duration-500">
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="1">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="1" data-risk="regular">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">Times Internet Ltd.</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">2,37,87,044</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Regular</td>
                                     </tr>
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="2">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="2" data-risk="regular">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">V MART RETAIL LTD</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">2,22,18,350</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Regular</td>
                                     </tr>
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="3">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="3" data-risk="irregular">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">NATIONAL HOUSING BANK</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">1,81,55,560</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">Irregular</td>
                                     </tr>
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="4">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="4" data-risk="regular">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">TATA COFFEE LIMITED</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">1,13,05,100</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Regular</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -212,24 +241,29 @@
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Name</th>
                                         <th class="px-6 py-3 text-right text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Purchase Value (₹)</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Risk Status</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200 transition-colors duration-500">
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="1">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="1" data-risk="regular">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">INEXUS BIOTECH</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">2,31,28,200</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Regular</td>
                                     </tr>
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="2">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="2" data-risk="regular">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">Calpro Specialties</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">1,98,55,980</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Regular</td>
                                     </tr>
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="3">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="3" data-risk="irregular">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">BIMAL AUTO AGENCY</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">1,55,80,000</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">Irregular</td>
                                     </tr>
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="4">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="4" data-risk="regular">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">TATA CONSULTANCY SVS</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">1,45,30,000</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Regular</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -239,7 +273,7 @@
 
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">State-Wise Distribution</h2>
-                    <p class="text-gray-600 mb-6 transition-colors duration-500">This visual breakdown shows the geographic concentration of sales and purchases. These charts help in identifying key markets and supply sources across different states.</p>
+                    <p class="text-gray-600 mb-6 transition-colors duration-500">This visual breakdown shows the geographic concentration of sales and purchases.</p>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-white p-4 md:p-6 rounded-xl shadow-lg transition-colors duration-500">
                             <h3 class="font-bold text-center text-gray-700 mb-4 transition-colors duration-500">State-Wise Sales</h3>
@@ -322,17 +356,9 @@
                         { id: 'TI/23-24/001', date: '2023-04-10', value: '₹ 58,00,000', status: 'Paid' },
                         { id: 'TI/23-24/005', date: '2023-08-22', value: '₹ 75,00,000', status: 'Paid' },
                     ],
-                    'V MART RETAIL LTD': [
-                        { id: 'VMR/23-24/102', date: '2023-05-01', value: '₹ 60,00,000', status: 'Paid' },
-                        { id: 'VMR/23-24/205', date: '2024-01-15', value: '₹ 55,00,000', status: 'Paid' },
-                    ],
                     'NATIONAL HOUSING BANK': [
                         { id: 'NHB/23-24/020', date: '2023-09-05', value: '₹ 40,00,000', status: 'Paid' },
-                        { id: 'NHB/23-24/080', date: '2024-02-28', value: '₹ 35,00,000', status: 'Paid' },
-                    ],
-                    'TATA COFFEE LIMITED': [
-                        { id: 'TCL/23-24/301', date: '2023-06-12', value: '₹ 30,00,000', status: 'Paid' },
-                        { id: 'TCL/23-24/405', date: '2023-11-20', value: '₹ 28,00,000', status: 'Paid' },
+                        { id: 'NHB/23-24/080', date: '2024-02-28', value: '₹ 35,00,000', status: 'Paid', status_risk: 'Irregular' }, // Added risk status for demo
                     ],
                 },
                 supplierInvoices: {
@@ -340,17 +366,9 @@
                         { id: 'IB/P/04-23', date: '2023-04-15', value: '₹ 45,00,000', status: 'Paid' },
                         { id: 'IB/P/12-23', date: '2023-12-01', value: '₹ 60,00,000', status: 'Paid' },
                     ],
-                    'Calpro Specialties': [
-                        { id: 'CSP/B/07-23', date: '2023-07-25', value: '₹ 50,00,000', status: 'Paid' },
-                        { id: 'CSP/B/01-24', date: '2024-01-05', value: '₹ 45,00,000', status: 'Paid' },
-                    ],
                     'BIMAL AUTO AGENCY': [
-                        { id: 'BAA/B/05-23', date: '2023-05-18', value: '₹ 35,00,000', status: 'Paid' },
+                        { id: 'BAA/B/05-23', date: '2023-05-18', value: '₹ 35,00,000', status: 'Paid', status_risk: 'Irregular' },
                         { id: 'BAA/B/10-23', date: '2023-10-10', value: '₹ 30,00,000', status: 'Paid' },
-                    ],
-                    'TATA CONSULTANCY SVS': [
-                        { id: 'TCS/B/09-23', date: '2023-09-01', value: '₹ 38,00,000', status: 'Paid' },
-                        { id: 'TCS/B/02-24', date: '2024-02-10', value: '₹ 35,00,000', status: 'Paid' },
                     ],
                 }
             };
@@ -360,9 +378,13 @@
             let charts = {};
             let isDarkMode = localStorage.getItem('theme') === 'dark';
             
-            // Get date inputs and initial values
+            // Get filter inputs and initial values
             const fromDateInput = document.getElementById('from-date');
             const toDateInput = document.getElementById('to-date');
+            const typeFilter = document.getElementById('type-filter');
+            const rateFilter = document.getElementById('rate-filter');
+            const hsnFilter = document.getElementById('hsn-filter');
+
             let currentFromDate = fromDateInput.value;
             let currentToDate = toDateInput.value;
 
@@ -505,15 +527,24 @@
                 const formattedFrom = formatter.format(new Date(from));
                 const formattedTo = formatter.format(new Date(to));
                 
+                const typeText = typeFilter.value !== 'all' ? ` (Type: ${typeFilter.options[typeFilter.selectedIndex].text})` : '';
+                const rateText = rateFilter.value !== 'all' ? ` (Rate: ${rateFilter.value}%)` : '';
+                const hsnText = hsnFilter.value !== 'all' ? ` (HSN: ${hsnFilter.value})` : '';
+
                 document.querySelectorAll('[id$="-period"]').forEach(el => {
-                    el.textContent = `Displaying data for the period: ${formattedFrom} - ${formattedTo}`;
+                    el.textContent = `Displaying data for the period: ${formattedFrom} - ${formattedTo}${typeText}${rateText}${hsnText}`;
                 });
             }
             
             // --- CORE FUNCTION TO UPDATE ALL DATA & CHARTS ---
             const renderData = (from, to) => {
                 updatePeriodLabels(from, to);
-                // NOTE: In a real app, API calls would fetch data based on 'from' and 'to' here.
+                
+                // --- SIMULATION LOGIC ---
+                // In a real app, API calls would fetch aggregated data based on 
+                // fromDate, toDate, typeFilter.value, rateFilter.value, and hsnFilter.value
+                // For this static demo, we simply show a confirmation modal.
+                
                 renderKPIs();
                 initCharts();
             };
@@ -651,7 +682,7 @@
             };
 
             const generateInvoiceTable = (invoices, isCustomer) => {
-                if (!invoices || invoices.length === 0) return `<p>No recent ${isCustomer ? 'sales' : 'purchase'} invoices found.</p>`;
+                if (!invoices || invoices.length === 0) return `<p>No recent ${isCustomer ? 'sales' : 'purchase'} invoices found under the current filter selection.</p>`;
                 
                 const headerValue = isCustomer ? 'Supply Value' : 'Purchase Value';
                 const headerRows = `
@@ -670,7 +701,7 @@
                         <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">${inv.id}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">${inv.date}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-700 dark:text-gray-300">${inv.value}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-green-600 dark:text-green-400">${inv.status}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm ${inv.status_risk === 'Irregular' ? 'text-red-600' : 'text-green-600'} dark:text-green-400">${inv.status}</td>
                     </tr>
                 `).join('');
 
@@ -707,6 +738,36 @@
                 }
             };
             
+            const handleFilterChange = () => {
+                // Collect all current filter values
+                const currentFilters = {
+                    fromDate: fromDateInput.value,
+                    toDate: toDateInput.value,
+                    type: typeFilter.value,
+                    rate: rateFilter.value,
+                    hsn: hsnFilter.value
+                };
+                
+                currentFromDate = currentFilters.fromDate;
+                currentToDate = currentFilters.toDate;
+
+                const message = `Dashboard data is being reloaded and filtered based on the new criteria: 
+                                <ul class="list-disc pl-5 mt-3 space-y-1">
+                                    <li>Period: ${currentFilters.fromDate} to ${currentFilters.toDate}</li>
+                                    <li>Type: ${typeFilter.options[typeFilter.selectedIndex].text}</li>
+                                    <li>GST Rate: ${currentFilters.rate}%</li>
+                                    <li>HSN/SAC: ${currentFilters.hsn}</li>
+                                </ul>
+                                <p class="text-sm mt-3 italic">All charts, KPIs, and tables below will update to reflect this filtered dataset.</p>`;
+                
+                showModal(
+                    "Data Filtering Simulation", 
+                    message
+                );
+                
+                renderData(currentFromDate, currentToDate);
+            };
+
             const handleGSTINChange = (e) => {
                 const selectedGSTIN = e.target.value;
                 const gstinLabel = DB.GSTINs.find(g => g.value === selectedGSTIN).label;
@@ -717,25 +778,6 @@
                 );
             };
 
-            const handleDateChange = (e) => {
-                const newFromDate = fromDateInput.value;
-                const newToDate = toDateInput.value;
-                
-                if (newFromDate && newToDate && new Date(newFromDate) <= new Date(newToDate)) {
-                    currentFromDate = newFromDate;
-                    currentToDate = newToDate;
-                    
-                    showModal(
-                        "Data Filtering Simulation", 
-                        `Data reload requested for the new period: ${currentFromDate} to ${currentToDate}.`,
-                        `<p class="text-sm">In a real application, the system would now calculate aggregated values for this new date range and re-render all charts and KPIs.</p>`
-                    );
-                    
-                    renderData(currentFromDate, currentToDate);
-                } else {
-                    console.error("Invalid date range selected.");
-                }
-            };
 
             const handlePartyClick = (e) => {
                 const row = e.target.closest('tr');
@@ -744,17 +786,18 @@
                 const type = row.dataset.type;
                 const name = row.querySelector('td:first-child').textContent;
                 const value = row.querySelector('td:last-child').textContent;
+                const riskStatus = row.dataset.risk === 'irregular' ? 'Irregular' : 'Regular';
 
                 let title, message, invoices;
 
                 if (type === 'customer') {
                     title = `Customer Drill-Down: ${name}`;
-                    message = `Viewing last invoices for total supply value of ${value} for the period ${currentFromDate} to ${currentToDate}.`;
-                    invoices = DB.customerInvoices[name];
+                    message = `Viewing last invoices for total supply value of ${value}. Risk Status: ${riskStatus}.`;
+                    invoices = DB.customerInvoices[name] || DB.customerInvoices['Times Internet Ltd.']; // Fallback for demo
                 } else {
                     title = `Supplier Drill-Down: ${name}`;
-                    message = `Viewing last bills for total purchase value of ${value} for the period ${currentFromDate} to ${currentToDate}.`;
-                    invoices = DB.supplierInvoices[name];
+                    message = `Viewing last bills for total purchase value of ${value}. Risk Status: ${riskStatus}.`;
+                    invoices = DB.supplierInvoices[name] || DB.supplierInvoices['INEXUS BIOTECH']; // Fallback for demo
                 }
                 
                 const contentHTML = generateInvoiceTable(invoices, type === 'customer');
@@ -786,7 +829,7 @@
                         <span class="font-semibold">ITC Available (Cr):</span>
                         <span>${DB.monthlyData.itcAvailable[dataPoint.index]} Cr</span>
                     </div>
-                    <p class="text-sm text-center pt-4 italic">In a production dashboard, a detailed list of all invoices and bills for ${month} within the selected date range would appear here.</p>
+                    <p class="text-sm text-center pt-4 italic">In a production dashboard, a detailed list of all invoices and bills for ${month} within the selected filter criteria would appear here.</p>
                 `;
                 
                 showModal(title, message, contentHTML);
@@ -841,9 +884,13 @@
                 document.getElementById('theme-toggle').addEventListener('click', toggleDarkMode);
                 document.getElementById('alert-btn').addEventListener('click', handleAlertClick);
 
-                // Date Change Listeners
-                fromDateInput.addEventListener('change', handleDateChange);
-                toDateInput.addEventListener('change', handleDateChange);
+                // Add listeners to ALL new filter inputs
+                fromDateInput.addEventListener('change', handleFilterChange);
+                toDateInput.addEventListener('change', handleFilterChange);
+                typeFilter.addEventListener('change', handleFilterChange);
+                rateFilter.addEventListener('change', handleFilterChange);
+                hsnFilter.addEventListener('change', handleFilterChange);
+
 
                 document.getElementById('customer-table').addEventListener('click', handlePartyClick);
                 document.getElementById('supplier-table').addEventListener('click', handlePartyClick);
