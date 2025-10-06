@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GST Analytics Dashboard (Final Catchy Edition - All Green)</title>
+    <title>GST Analytics Dashboard (Final with FY Range)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +39,7 @@
         .modal-enter-active { opacity: 1; transform: scale(1); }
         .modal-leave-active { opacity: 0; transform: scale(0.95); transition: all 300ms ease-in; }
 
-        /* Style for date and select inputs to look clean */
+        /* Style for select inputs to look clean */
         .filter-input {
             appearance: none;
             -webkit-appearance: none;
@@ -93,11 +93,13 @@
                 <div class="flex flex-wrap items-center space-x-4 space-y-2 md:space-y-0 mt-2 md:mt-0">
                     
                     <div class="flex items-center text-sm">
-                        <label for="from-date" class="font-medium mr-2">From:</label>
-                        <input type="date" id="from-date" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50" value="2023-04-01">
+                        <label for="fy-from-select" class="font-medium mr-2">FY From:</label>
+                        <select id="fy-from-select" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50">
+                            </select>
                         
-                        <label for="to-date" class="font-medium ml-4 mr-2">To:</label>
-                        <input type="date" id="to-date" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50" value="2024-03-31">
+                        <label for="fy-to-select" class="font-medium ml-4 mr-2">FY To:</label>
+                        <select id="fy-to-select" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50">
+                            </select>
                     </div>
 
                     <button id="alert-btn" class="relative p-2 rounded-full hover:bg-white/10 transition-colors">
@@ -124,7 +126,7 @@
             <section id="overview" class="tab-content">
                 <div class="mb-10">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">Key Financial Metrics</h2>
-                    <p id="overview-period" class="text-lg font-semibold text-blue-600 mb-4">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
+                    <p id="overview-period" class="text-lg font-semibold text-blue-600 mb-4">Displaying data for the period: FY 2023-24 to FY 2023-24</p>
                     <p class="text-gray-600 mb-6 transition-colors duration-500">This summary reflects the cumulative effect of the global date and GSTIN filters.</p>
                     <div id="kpi-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         </div>
@@ -153,7 +155,7 @@
             <section id="trends" class="tab-content hidden">
                 <div class="mb-10">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">GST Liability vs. ITC Trend</h2>
-                    <p class="text-lg font-semibold text-blue-600 mb-4" id="trends-period">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
+                    <p class="text-lg font-semibold text-blue-600 mb-4" id="trends-period">Displaying data for the period: FY 2023-24 to FY 2023-24</p>
                     <p class="text-gray-600 mb-6 transition-colors duration-500">This chart illustrates the monthly relationship between GST liability and the Input Tax Credit (ITC) available.</p>
                     <div class="bg-white p-4 md:p-6 rounded-xl shadow-lg transition-colors duration-500">
                         <div class="chart-container">
@@ -192,7 +194,7 @@
             <section id="parties" class="tab-content hidden">
                 <div class="mb-10">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">Top Customers & Suppliers</h2>
-                    <p class="text-lg font-semibold text-blue-600 mb-4" id="parties-period">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
+                    <p class="text-lg font-semibold text-blue-600 mb-4" id="parties-period">Displaying data for the period: FY 2023-24 to FY 2023-24</p>
                     <p class="text-gray-600 mb-6 transition-colors duration-500">Key business partners filtered by the selected criteria.</p>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto transition-colors duration-500">
@@ -312,7 +314,7 @@
 
             <section id="hsn" class="tab-content hidden">
                 <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">HSN/SAC Code Analysis</h2>
-                <p class="text-lg font-semibold text-blue-600 mb-4" id="hsn-period">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
+                <p class="text-lg font-semibold text-blue-600 mb-4" id="hsn-period">Displaying data for the period: FY 2023-24 to FY 2023-24</p>
                 <p class="text-gray-600 mb-6 transition-colors duration-500">This section breaks down business activity and tax liability by goods (HSN) and services (SAC) codes.</p>
                 
                 <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto transition-colors duration-500">
@@ -338,7 +340,7 @@
             
             <section id="rate" class="tab-content hidden">
                 <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">GST Rate-Wise Tax Analysis</h2>
-                <p class="text-lg font-semibold text-blue-600 mb-4" id="rate-period">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
+                <p class="text-lg font-semibold text-blue-600 mb-4" id="rate-period">Displaying data for the period: FY 2023-24 to FY 2023-24</p>
                 <p class="text-gray-600 mb-6 transition-colors duration-500">Breakdown of total tax collected and paid across different GST tax rate slabs.</p>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -359,7 +361,7 @@
             
             <section id="cdn" class="tab-content hidden">
                 <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">Credit/Debit Note Register</h2>
-                <p class="text-lg font-semibold text-blue-600 mb-4" id="cdn-period">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
+                <p class="text-lg font-semibold text-blue-600 mb-4" id="cdn-period">Displaying data for the period: FY 2023-24 to FY 2023-24</p>
                 <p class="text-gray-600 mb-6 transition-colors duration-500">A register of all adjustments (reductions/increases) to tax liability via Credit Notes (Sales/Output) and Debit Notes (Purchases/ITC).</p>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -429,6 +431,8 @@
         document.addEventListener('DOMContentLoaded', () => {
 
             // --- DATA STORE ---
+            const FY_OPTIONS = ["2024-25", "2023-24", "2022-23", "2021-22", "2020-21"];
+
             const DB = {
                 GSTINs: [
                     { value: "29AAFCD5862R1ZR", label: "29AAFCD5862R1ZR (Primary)" },
@@ -489,11 +493,11 @@
             let isDarkMode = localStorage.getItem('theme') === 'dark';
             
             // Get filter inputs and initial values
-            const fromDateInput = document.getElementById('from-date');
-            const toDateInput = document.getElementById('to-date');
+            const fyFromSelect = document.getElementById('fy-from-select');
+            const fyToSelect = document.getElementById('fy-to-select');
 
-            let currentFromDate = fromDateInput.value;
-            let currentToDate = toDateInput.value;
+            let currentFYFrom = '2023-24'; // Default
+            let currentFYTo = '2023-24';   // Default
 
 
             // --- HELPERS ---
@@ -577,7 +581,7 @@
                     
                     // --- CATCHY LOGIC ---
                     const isPositive = (data.fy24 - data.fy23) >= 0;
-                    const trendEmoji = isPositive ? '🚀' : '⚠️';
+                    const trendEmoji = isPositive ? '🚀' : '✨';
                     
                     let secondaryText = '';
                     if (title === 'Net Turnover') {
@@ -616,6 +620,20 @@
                     }
                 });
             };
+
+            // New function to render Financial Year dropdowns
+            const renderFYDropdowns = () => {
+                const fyOptionsHTML = FY_OPTIONS.map(fy => 
+                    `<option value="${fy}">${'FY ' + fy}</option>`
+                ).join('');
+
+                fyFromSelect.innerHTML = fyOptionsHTML;
+                fyToSelect.innerHTML = fyOptionsHTML;
+
+                // Set initial values to latest FY
+                fyFromSelect.value = '2023-24';
+                fyToSelect.value = '2023-24';
+            };
             
             const renderAlerts = () => {
                 const alertBadge = document.getElementById('alert-badge');
@@ -645,11 +663,7 @@
             };
 
             const updatePeriodLabels = (from, to) => {
-                const formatter = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                const formattedFrom = formatter.format(new Date(from));
-                const formattedTo = formatter.format(new Date(to));
-                
-                const periodText = `Displaying data for the period: ${formattedFrom} - ${formattedTo}`;
+                const periodText = `Displaying data for the period: FY ${from} to FY ${to}`;
 
                 document.querySelectorAll('[id$="-period"]').forEach(el => {
                     el.textContent = periodText;
@@ -659,7 +673,11 @@
             // --- CORE FUNCTION TO UPDATE ALL DATA & CHARTS ---
             const renderData = (from, to) => {
                 updatePeriodLabels(from, to);
-                // In a real app, API calls would fetch data based on date and GSTIN here.
+                
+                // In a real app, API calls would fetch aggregated data spanning multiple FYs here.
+                // The monthly charts (trends) would adjust to show the data points for all months 
+                // within the selected FY range, or show a summarized annual trend.
+
                 renderKPIs();
                 initCharts();
 
@@ -678,7 +696,7 @@
 
             };
             
-            // --- CHART CREATION (updated with rate charts) ---
+            // --- CHART CREATION (unchanged) ---
             const getChartSharedOptions = () => ({
                 responsive: true,
                 maintainAspectRatio: false,
@@ -714,7 +732,7 @@
                 const chartColors = ['#3B82F6', '#F97316', '#10B981', '#8B5CF6', '#6B7280', '#EF4444'];
                 const doughnutOptions = { ...sharedOptions, scales: {}, plugins: { ...sharedOptions.plugins, legend: { position: 'right', labels: { color: isDarkMode ? '#A0A0A0' : '#6d7378' } } } };
 
-                // --- Overview Tab Charts ---
+                // --- Overview Tab Charts (Monthly data for current FY) ---
                 createChart(document.getElementById('turnoverChart').getContext('2d'), {
                     type: 'bar',
                     data: {
@@ -883,18 +901,31 @@
             
             // Consolidated logic for all global filter changes (Date/GSTIN)
             const handleGlobalFilterChange = () => {
-                currentFromDate = fromDateInput.value;
-                currentToDate = toDateInput.value;
+                const fyFrom = fyFromSelect.value;
+                const fyTo = fyToSelect.value;
                 const selectedGSTIN = document.getElementById('gstin-select').value;
                 const gstinLabel = DB.GSTINs.find(g => g.value === selectedGSTIN).label;
 
+                // Simple validation to ensure FYFrom is not after FYTo
+                if (FY_OPTIONS.indexOf(fyFrom) > FY_OPTIONS.indexOf(fyTo)) {
+                    showModal(
+                        "Error: Invalid Year Selection",
+                        "The 'FY From' selection must be equal to or earlier than the 'FY To' selection. Please correct your choice.",
+                        `<p class="text-sm italic">Current Selection: FY ${fyFrom} to FY ${fyTo}</p>`
+                    );
+                    return;
+                }
+
+                currentFYFrom = fyFrom;
+                currentFYTo = fyTo;
+
                 showModal(
-                    "Global Data Filtering Simulation", 
-                    `The dashboard is refreshing data for the period **${currentFromDate} to ${currentToDate}** and filtering by **${gstinLabel}**.`,
-                    `<p class="text-sm italic">All displayed data and charts are now recalculated based on this global filter selection.</p>`
+                    "Multi-Year Data Filtering Simulation", 
+                    `The dashboard is refreshing aggregated data for the period **FY ${fyFrom} to FY ${fyTo}** and filtering by **${gstinLabel}**.`,
+                    `<p class="text-sm italic">In a production environment, all charts would now display the consolidated trend across these ${FY_OPTIONS.indexOf(fyFrom) - FY_OPTIONS.indexOf(fyTo) + 1} financial years.</p>`
                 );
                 
-                renderData(currentFromDate, currentToDate);
+                renderData(currentFYFrom, currentFYTo);
             };
 
             const handlePartyClick = (e) => {
@@ -912,11 +943,11 @@
 
                 if (type === 'customer') {
                     title = `Customer Drill-Down: ${name}`;
-                    message = `Viewing last invoices for total supply value of ${value}. Status: ${riskStatus}.`;
+                    message = `Viewing invoices for total supply value of ${value} within the selected range (FY ${currentFYFrom} to FY ${currentFYTo}).`;
                     invoices = DB.customerInvoices[name] || DB.customerInvoices['Times Internet Ltd.']; // Fallback for demo
                 } else {
                     title = `Supplier Drill-Down: ${name}`;
-                    message = `Viewing last bills for total purchase value of ${value}. Status: ${riskStatus}.`;
+                    message = `Viewing bills for total purchase value of ${value} within the selected range (FY ${currentFYFrom} to FY ${currentFYTo}).`;
                     invoices = DB.supplierInvoices[name] || DB.supplierInvoices['INEXUS BIOTECH']; // Fallback for demo
                 }
                 
@@ -934,10 +965,10 @@
                 const dataPoint = activePoints[0];
                 const label = chart.data.labels[dataPoint.index];
                 
-                const title = (chartId.includes('rate') ? "Tax Rate Breakdown" : chartId.includes('Trend') ? "Monthly Transaction Breakdown" : "Data Point Detail");
-                const message = `Detailed data for **${label}** applied across the current filters.`;
+                const title = (chartId.includes('rate') ? "Tax Rate Breakdown" : chartId.includes('Trend') ? "Monthly/Annual Trend Detail" : "Data Point Detail");
+                const message = `Detailed data for **${label}** across the period FY ${currentFYFrom} to FY ${currentFYTo}.`;
 
-                const contentHTML = `<p class="text-sm italic pt-4">This modal would show a detailed list of transactions, invoices, or HSN codes contributing to the selected chart segment/month.</p>`;
+                const contentHTML = `<p class="text-sm italic pt-4">This modal would show a detailed list of transactions, invoices, or annual figures contributing to the selected chart segment.</p>`;
                 
                 showModal(title, message, contentHTML);
             };
@@ -978,10 +1009,11 @@
                 }
 
                 renderDropdown();
+                renderFYDropdowns(); // Render the new FY selectors
                 renderTabs();
                 renderAlerts();
                 
-                renderData(currentFromDate, currentToDate);
+                renderData(currentFYFrom, currentFYTo);
 
                 // Event Listeners
                 document.getElementById('tabs-container').addEventListener('click', handleTabClick);
@@ -991,8 +1023,8 @@
                 document.getElementById('alert-btn').addEventListener('click', handleAlertClick);
 
                 // Attach global filter listeners to the consolidated handler
-                fromDateInput.addEventListener('change', handleGlobalFilterChange);
-                toDateInput.addEventListener('change', handleGlobalFilterChange);
+                fyFromSelect.addEventListener('change', handleGlobalFilterChange);
+                fyToSelect.addEventListener('change', handleGlobalFilterChange);
                 document.getElementById('gstin-select').addEventListener('change', handleGlobalFilterChange);
 
                 // Table and Chart clicks
