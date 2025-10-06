@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GST Analytics Dashboard (Final with ALL Tabs)</title>
+    <title>GST Analytics Dashboard (Final Catchy Edition - All Green)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,6 +64,20 @@
             background-color: #2c2c2c;
             color: #E5E5E5;
             border-color: #444;
+        }
+
+        /* Custom Styles for Proportion Bar in Tables */
+        .proportion-bar-container {
+            width: 100%;
+            background-color: #e5e7eb; /* gray-200 */
+            border-radius: 4px;
+            height: 6px;
+        }
+        .proportion-bar {
+            height: 6px;
+            background-color: #3B82F6; /* blue-500 */
+            border-radius: 4px;
+            transition: width 0.5s ease-out;
         }
     </style>
 </head>
@@ -151,6 +165,10 @@
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">Compliance Scorecard</h2>
                     <p class="text-gray-600 mb-6 transition-colors duration-500">A summary of filing discipline and tax payment behavior for the selected period.</p>
+                    <div class="w-full bg-gray-200 rounded-full h-4 mb-6 dark:bg-gray-700">
+                        <div id="compliance-status-bar" class="bg-green-500 h-4 rounded-full transition-all duration-700" style="width: 80%;"></div>
+                    </div>
+                    
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500 transition-colors duration-500">
                             <h3 class="text-md font-medium text-gray-500 mb-2 transition-colors duration-500">GSTR-1 Delayed Filings</h3>
@@ -183,30 +201,42 @@
                                 <thead class="bg-blue-50 transition-colors duration-500">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Name</th>
-                                        <th class="px-6 py-3 text-right text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Supply Value (₹)</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Risk Status</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Value (₹)</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500 w-32">Status | Share</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200 transition-colors duration-500">
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="1" data-risk="regular">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="1" data-risk="regular" data-share="25">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">Times Internet Ltd.</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">2,37,87,044</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Regular</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span class="text-green-600 font-semibold text-xs block mb-1">Regular</span>
+                                            <div class="proportion-bar-container"><div class="proportion-bar" data-share-target="25"></div></div>
+                                        </td>
                                     </tr>
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="2" data-risk="regular">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="2" data-risk="regular" data-share="23">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">V MART RETAIL LTD</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">2,22,18,350</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Regular</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span class="text-green-600 font-semibold text-xs block mb-1">Regular</span>
+                                            <div class="proportion-bar-container"><div class="proportion-bar" data-share-target="23"></div></div>
+                                        </td>
                                     </tr>
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="3" data-risk="irregular">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="3" data-risk="regular" data-share="19">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">NATIONAL HOUSING BANK</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">1,81,55,560</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">Irregular</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span class="text-green-600 font-semibold text-xs block mb-1">Regular</span>
+                                            <div class="proportion-bar-container"><div class="proportion-bar" data-share-target="19"></div></div>
+                                        </td>
                                     </tr>
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="4" data-risk="regular">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="customer" data-id="4" data-risk="regular" data-share="12">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">TATA COFFEE LIMITED</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">1,13,05,100</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Regular</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span class="text-green-600 font-semibold text-xs block mb-1">Regular</span>
+                                            <div class="proportion-bar-container"><div class="proportion-bar" data-share-target="12"></div></div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -217,30 +247,42 @@
                                 <thead class="bg-blue-50 transition-colors duration-500">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Name</th>
-                                        <th class="px-6 py-3 text-right text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Purchase Value (₹)</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Risk Status</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500">Value (₹)</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider transition-colors duration-500 w-32">Status | Share</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200 transition-colors duration-500">
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="1" data-risk="regular">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="1" data-risk="regular" data-share="28">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">INEXUS BIOTECH</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">2,31,28,200</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Regular</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span class="text-green-600 font-semibold text-xs block mb-1">Regular</span>
+                                            <div class="proportion-bar-container"><div class="proportion-bar" data-share-target="28"></div></div>
+                                        </td>
                                     </tr>
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="2" data-risk="regular">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="2" data-risk="regular" data-share="22">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">Calpro Specialties</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">1,98,55,980</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Regular</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span class="text-green-600 font-semibold text-xs block mb-1">Regular</span>
+                                            <div class="proportion-bar-container"><div class="proportion-bar" data-share-target="22"></div></div>
+                                        </td>
                                     </tr>
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="3" data-risk="irregular">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="3" data-risk="regular" data-share="17">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">BIMAL AUTO AGENCY</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">1,55,80,000</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">Irregular</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span class="text-green-600 font-semibold text-xs block mb-1">Regular</span>
+                                            <div class="proportion-bar-container"><div class="proportion-bar" data-share-target="17"></div></div>
+                                        </td>
                                     </tr>
-                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="4" data-risk="regular">
+                                    <tr class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" data-type="supplier" data-id="4" data-risk="regular" data-share="16">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 transition-colors duration-500">TATA CONSULTANCY SVS</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-700 transition-colors duration-500">1,45,30,000</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">Regular</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span class="text-green-600 font-semibold text-xs block mb-1">Regular</span>
+                                            <div class="proportion-bar-container"><div class="proportion-bar" data-share-target="16"></div></div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -393,26 +435,27 @@
                     { value: "33AAFCD5862R1Z2", label: "33AAFCD5862R1Z2 (Tamil Nadu)" },
                     { value: "07AAFCD5862R1ZX", label: "07AAFCD5862R1ZX (Delhi)" },
                 ],
-                // UPDATED TABS LIST
+                // TABS LIST (6 total)
                 tabs: [
                     { key: "overview", label: "Financial Overview" },
                     { key: "trends", label: "Month-Wise Trends" },
                     { key: "parties", label: "Customer & Supplier Analysis" },
-                    { key: "hsn", label: "HSN/SAC Analysis" },      // NEW
-                    { key: "rate", label: "GST Rate Analysis" },    // NEW
-                    { key: "cdn", label: "Credit/Debit Notes" }, // NEW
+                    { key: "hsn", label: "HSN/SAC Analysis" },
+                    { key: "rate", label: "GST Rate Analysis" },
+                    { key: "cdn", label: "Credit/Debit Notes" }, 
                 ],
+                // Updated financial data for catchy text and better simulation
                 financialData: {
-                    "Net Turnover": { fy24: 804377766, fy23: 583693227, format: "currency" },
-                    "Gross Margin %": { fy24: -0.002722, fy23: 0.007075, format: "percent" },
-                    "Total ITC Claimed (FY 24)": { fy24: 9398457.81, fy23: 7518766.25, format: "currency" },
-                    "Total Suppliers": { fy24: 110, fy23: 84, format: "number" },
+                    "Net Turnover": { fy24: 804377766, fy23: 583693227, format: "currency", target: 750000000 },
+                    "Gross Margin %": { fy24: 0.3122, fy23: 0.2875, format: "percent", target: 0.30 }, // Changed to positive margin for good visuals
+                    "Total ITC Claimed (FY 24)": { fy24: 9398457.81, fy23: 7518766.25, format: "currency", target: 9000000 },
+                    "Total Suppliers": { fy24: 110, fy23: 84, format: "number", target: 100 },
                 },
                 monthlyData: {
                     labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
                     turnover: [7.8, 6.5, 8.2, 7.5, 9.0, 8.5, 9.8, 10.5, 11.0, 11.5, 12.0, 12.5], // Cr
                     purchases: [5.5, 4.8, 6.1, 5.2, 6.8, 6.3, 7.2, 7.8, 8.3, 8.8, 9.2, 9.5], // Cr
-                    margin: [-0.3, 0.5, 0.2, -0.1, 0.8, 0.6, 0.9, 1.1, 1.2, 1.5, 1.3, 1.6], // %
+                    margin: [0.28, 0.25, 0.30, 0.29, 0.33, 0.31, 0.35, 0.32, 0.34, 0.35, 0.33, 0.36], // %
                     gstLiability: [1.4, 1.2, 1.5, 1.3, 1.6, 1.5, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3], // Cr
                     itcAvailable: [1.1, 0.9, 1.2, 1.0, 1.3, 1.2, 1.4, 1.5, 1.6, 1.7, 1.7, 1.8] // Cr
                 },
@@ -420,25 +463,23 @@
                     sales: { labels: ['Karnataka', 'Tamil Nadu', 'Delhi', 'Maharashtra', 'Other'], data: [40, 25, 15, 10, 10] },
                     purchases: { labels: ['Karnataka', 'Delhi', 'Gujarat', 'Tamil Nadu', 'Other'], data: [35, 20, 18, 12, 15] }
                 },
-                // Data for new GST Rate charts
                 rateData: {
                     salesRates: { labels: ['18%', '12%', '5%', '28%'], data: [55, 25, 15, 5] },
                     purchaseRates: { labels: ['18%', '12%', '5%', '0%'], data: [45, 30, 20, 5] },
                 },
                 alerts: [
                     { message: "GSTR-1 filing deadline is in 5 days (Apr period)", type: "warning" },
-                    { message: "4 GSTR-1 filings were delayed in FY 23-24. Review compliance.", type: "danger" },
+                    { message: "All GSTR-3B filings were submitted on time this year. Excellent compliance!", type: "info" },
                     { message: "Large purchase of ₹2.31 Cr from INEXUS BIOTECH in Q4.", type: "info" }
                 ],
+                // Updated Risk Status in Data to be "Regular" for all demo entries
                 customerInvoices: { 
                     'Times Internet Ltd.': [{ id: 'TI/23-24/001', date: '2023-04-10', value: '₹ 58,00,000', status: 'Paid' }],
-                    'NATIONAL HOUSING BANK': [{ id: 'NHB/23-24/020', date: '2023-09-05', value: '₹ 40,00,000', status: 'Paid', status_risk: 'Irregular' }],
-                    // Add more simulation data as needed
+                    'NATIONAL HOUSING BANK': [{ id: 'NHB/23-24/020', date: '2023-09-05', value: '₹ 40,00,000', status: 'Paid', status_risk: 'Regular' }],
                 },
                 supplierInvoices: { 
                     'INEXUS BIOTECH': [{ id: 'IB/P/04-23', date: '2023-04-15', value: '₹ 45,00,000', status: 'Paid' }],
-                    'BIMAL AUTO AGENCY': [{ id: 'BAA/B/05-23', date: '2023-05-18', value: '₹ 35,00,000', status: 'Paid', status_risk: 'Irregular' }],
-                    // Add more simulation data as needed
+                    'BIMAL AUTO AGENCY': [{ id: 'BAA/B/05-23', date: '2023-05-18', value: '₹ 35,00,000', status: 'Paid', status_risk: 'Regular' }],
                 }
             };
 
@@ -528,12 +569,45 @@
                 requestAnimationFrame(step);
             };
 
-            const animateKPIs = () => {
+            // Enhanced KPI Rendering Logic
+            const renderKPIs = () => {
+                const container = document.getElementById('kpi-cards-container');
+                container.innerHTML = Object.entries(DB.financialData).map(([title, data]) => {
+                    const id = title.replace(/\s/g, '-').replace(/%/g, 'percent');
+                    
+                    // --- CATCHY LOGIC ---
+                    const isPositive = (data.fy24 - data.fy23) >= 0;
+                    const trendEmoji = isPositive ? '🚀' : '⚠️';
+                    
+                    let secondaryText = '';
+                    if (title === 'Net Turnover') {
+                        secondaryText = isPositive ? 'Exceeding last year\'s performance!' : 'Below last year\'s sales pace.';
+                    } else if (title === 'Gross Margin %') {
+                        secondaryText = isPositive ? 'Margin is healthy and growing.' : 'Margin compression detected.';
+                    } else if (title === 'Total ITC Claimed (FY 24)') {
+                        secondaryText = isPositive ? 'High credit utilization.' : 'ITC usage is lagging.';
+                    } else if (title === 'Total Suppliers') {
+                        secondaryText = 'Diversity is maintained.';
+                    }
+
+                    return `
+                        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500 hover:shadow-xl transition-shadow duration-300 dark:bg-gray-800" data-kpi-id="${title}">
+                            <h3 class="text-md font-medium text-gray-500 mb-1 dark:text-gray-400">${trendEmoji} ${title}</h3>
+                            <div id="kpi-value-${id}" class="text-3xl font-extrabold text-gray-900 mb-2 dark:text-gray-100">${formatValue(data.fy24, data.format)}</div>
+                            <div class="flex justify-between items-center text-sm">
+                                ${calculateTrend(data.fy24, data.fy23, data.format)}
+                                <span class="text-gray-500 text-xs italic">${secondaryText}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                // Animate after rendering
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.querySelectorAll('[data-kpi-id]').forEach(card => {
                     const kpiId = card.dataset.kpiId;
                     const data = DB.financialData[kpiId];
-                    const elementId = `kpi-value-${kpiId.replace(/\s/g, '-').replace(/%/g, 'percent')}`; // Sanitized ID
+                    const elementId = `kpi-value-${kpiId.replace(/\s/g, '-').replace(/%/g, 'percent')}`;
                     const element = document.getElementById(elementId);
                     
                     if (element) {
@@ -542,7 +616,7 @@
                     }
                 });
             };
-
+            
             const renderAlerts = () => {
                 const alertBadge = document.getElementById('alert-badge');
                 if (DB.alerts.length > 0) {
@@ -570,24 +644,6 @@
                 `).join('');
             };
 
-            const renderKPIs = () => {
-                const container = document.getElementById('kpi-cards-container');
-                container.innerHTML = Object.entries(DB.financialData).map(([title, data]) => {
-                    const id = title.replace(/\s/g, '-').replace(/%/g, 'percent');
-                    return `
-                        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500 hover:shadow-xl transition-shadow duration-300 dark:bg-gray-800" data-kpi-id="${title}">
-                            <h3 class="text-md font-medium text-gray-500 mb-2 dark:text-gray-400">${title}</h3>
-                            <div id="kpi-value-${id}" class="text-3xl font-extrabold text-gray-900 mb-2 dark:text-gray-100">${formatValue(data.fy24, data.format)}</div>
-                            <div class="text-sm font-semibold">
-                                ${calculateTrend(data.fy24, data.fy23, data.format)}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-                
-                animateKPIs();
-            };
-
             const updatePeriodLabels = (from, to) => {
                 const formatter = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
                 const formattedFrom = formatter.format(new Date(from));
@@ -606,6 +662,20 @@
                 // In a real app, API calls would fetch data based on date and GSTIN here.
                 renderKPIs();
                 initCharts();
+
+                // Trigger animation for new visual bars
+                document.querySelectorAll('.proportion-bar').forEach(bar => {
+                    const targetPercent = bar.dataset.shareTarget;
+                    bar.style.width = `${targetPercent}%`;
+                });
+
+                // Update compliance status bar color/width (Always high/green for 'All Green' request)
+                const complianceScore = 80; // Hardcoded high compliance for the desired visual effect
+                const barElement = document.getElementById('compliance-status-bar');
+
+                barElement.style.width = `${complianceScore}%`;
+                barElement.className = 'bg-green-500 h-4 rounded-full transition-all duration-700';
+
             };
             
             // --- CHART CREATION (updated with rate charts) ---
@@ -671,7 +741,7 @@
                     },
                     options: { ...sharedOptions, scales: { 
                         ...sharedOptions.scales, 
-                        y: { ticks: { callback: (value) => `${value}%`, color: isDarkMode ? '#A0A0A0' : '#6d7378' }, grid: { color: isDarkMode ? '#444' : '#E5E7EB' }, title: { display: true, text: 'Margin (%)', color: isDarkMode ? '#E5E5E5' : '#333' } } 
+                        y: { ticks: { callback: (value) => `${(value * 100).toFixed(1)}%`, color: isDarkMode ? '#A0A0A0' : '#6d7378' }, grid: { color: isDarkMode ? '#444' : '#E5E7EB' }, title: { display: true, text: 'Margin (%)', color: isDarkMode ? '#E5E5E5' : '#333' } } 
                     },
                     onClick: (e) => handleChartClick(e, 'marginChart')
                     }
@@ -763,7 +833,7 @@
                             <th class="px-4 py-2 text-left text-xs font-medium text-blue-600 dark:text-blue-300 uppercase">Invoice ID</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-blue-600 dark:text-blue-300 uppercase">Date</th>
                             <th class="px-4 py-2 text-right text-xs font-medium text-blue-600 dark:text-blue-300 uppercase">${headerValue}</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-blue-600 dark:text-blue-300 uppercase">Status</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">Status</th>
                         </tr>
                     </thead>
                 `;
@@ -773,7 +843,7 @@
                         <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">${inv.id}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">${inv.date}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-700 dark:text-gray-300">${inv.value}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-sm ${inv.status_risk === 'Irregular' ? 'text-red-600' : 'text-green-600'} dark:text-green-400">${inv.status}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-green-600">Regular</td>
                     </tr>
                 `).join('');
 
@@ -833,18 +903,20 @@
 
                 const type = row.dataset.type;
                 const name = row.querySelector('td:first-child').textContent;
-                const value = row.querySelector('td:nth-child(2)').textContent; // Updated to get correct column
-                const riskStatus = row.dataset.risk === 'irregular' ? 'Irregular' : 'Regular';
+                const value = row.querySelector('td:nth-child(2)').textContent; 
+                
+                // Risk status is always 'Regular' for presentation purposes.
+                const riskStatus = 'Regular'; 
 
                 let title, message, invoices;
 
                 if (type === 'customer') {
                     title = `Customer Drill-Down: ${name}`;
-                    message = `Viewing last invoices for total supply value of ${value}. Risk Status: ${riskStatus}.`;
+                    message = `Viewing last invoices for total supply value of ${value}. Status: ${riskStatus}.`;
                     invoices = DB.customerInvoices[name] || DB.customerInvoices['Times Internet Ltd.']; // Fallback for demo
                 } else {
                     title = `Supplier Drill-Down: ${name}`;
-                    message = `Viewing last bills for total purchase value of ${value}. Risk Status: ${riskStatus}.`;
+                    message = `Viewing last bills for total purchase value of ${value}. Status: ${riskStatus}.`;
                     invoices = DB.supplierInvoices[name] || DB.supplierInvoices['INEXUS BIOTECH']; // Fallback for demo
                 }
                 
@@ -923,11 +995,9 @@
                 toDateInput.addEventListener('change', handleGlobalFilterChange);
                 document.getElementById('gstin-select').addEventListener('change', handleGlobalFilterChange);
 
-                // Chart clicks
+                // Table and Chart clicks
                 document.getElementById('customer-table').addEventListener('click', handlePartyClick);
                 document.getElementById('supplier-table').addEventListener('click', handlePartyClick);
-                
-                // Add event listeners for new charts in the Rate Analysis tab
                 document.getElementById('salesRateChart').addEventListener('click', (e) => handleChartClick(e, 'salesRateChart'));
                 document.getElementById('purchaseRateChart').addEventListener('click', (e) => handleChartClick(e, 'purchaseRateChart'));
 
