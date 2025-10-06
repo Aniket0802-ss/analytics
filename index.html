@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GST Analytics Dashboard (Final with ALL Filters)</title>
+    <title>GST Analytics Dashboard (Final with Dedicated Tabs)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -85,29 +85,6 @@
                         <label for="to-date" class="font-medium ml-4 mr-2">To:</label>
                         <input type="date" id="to-date" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50" value="2024-03-31">
                     </div>
-                    
-                    <div class="flex items-center text-sm space-x-4">
-                        <select id="type-filter" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50">
-                            <option value="all">Type: All Transactions</option>
-                            <option value="b2b">B2B Sales/Purchases</option>
-                            <option value="b2c">B2C Sales</option>
-                            <option value="cn/dn">Credit/Debit Notes</option>
-                            <option value="export">Exports</option>
-                        </select>
-
-                        <select id="rate-filter" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50">
-                            <option value="all">Rate: All GST</option>
-                            <option value="18">18%</option>
-                            <option value="12">12%</option>
-                            <option value="5">5%</option>
-                        </select>
-
-                        <select id="hsn-filter" class="filter-input text-gray-800 dark:text-gray-100 dark:bg-gray-700/50">
-                            <option value="all">HSN/SAC: All Codes</option>
-                            <option value="9983">9983 (IT Services)</option>
-                            <option value="8471">8471 (Hardware)</option>
-                        </select>
-                    </div>
 
                     <button id="alert-btn" class="relative p-2 rounded-full hover:bg-white/10 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.476 6.136 6 8.447 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a2 2 0 100 4 2 2 0 000-4zm-6 0a2 2 0 100 4 2 2 0 000-4z"></path></svg>
@@ -134,14 +111,14 @@
                 <div class="mb-10">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">Key Financial Metrics</h2>
                     <p id="overview-period" class="text-lg font-semibold text-blue-600 mb-4">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
-                    <p class="text-gray-600 mb-6 transition-colors duration-500">This summary reflects the cumulative effect of current filters (Date, GSTIN, Type, Rate, HSN/SAC).</p>
+                    <p class="text-gray-600 mb-6 transition-colors duration-500">This summary reflects the cumulative effect of the global date and GSTIN filters.</p>
                     <div id="kpi-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         </div>
                 </div>
-            
+                
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">Yearly Comparison: Turnover, Purchases & Margin</h2>
-                    <p class="text-gray-600 mb-6 transition-colors duration-500">Explore the monthly trends in sales and procurement, and see how gross margin has evolved over the past year. Use the tooltips on the charts to see precise figures for each month.</p>
+                    <p class="text-gray-600 mb-6 transition-colors duration-500">Monthly trends in sales and procurement, with gross margin evolution.</p>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-white p-4 md:p-6 rounded-xl shadow-lg transition-colors duration-500">
                             <h3 class="font-bold text-center text-gray-700 mb-4 transition-colors duration-500">Turnover vs Purchases</h3>
@@ -163,7 +140,7 @@
                 <div class="mb-10">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">GST Liability vs. ITC Trend</h2>
                     <p class="text-lg font-semibold text-blue-600 mb-4">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
-                    <p class="text-gray-600 mb-6 transition-colors duration-500">This chart illustrates the monthly relationship between GST liability (tax owed) and the Input Tax Credit (ITC) available.</p>
+                    <p class="text-gray-600 mb-6 transition-colors duration-500">This chart illustrates the monthly relationship between GST liability and the Input Tax Credit (ITC) available.</p>
                     <div class="bg-white p-4 md:p-6 rounded-xl shadow-lg transition-colors duration-500">
                         <div class="chart-container">
                             <canvas id="gstTrendChart"></canvas>
@@ -290,6 +267,99 @@
                     </div>
                 </div>
             </section>
+
+            <section id="hsn" class="tab-content hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">HSN/SAC Code Analysis</h2>
+                <p class="text-lg font-semibold text-blue-600 mb-4" id="hsn-period">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
+                <p class="text-gray-600 mb-6 transition-colors duration-500">This section breaks down business activity and tax liability by goods (HSN) and services (SAC) codes.</p>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto transition-colors duration-500">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Top 5 HSN/SAC Codes by Turnover</h3>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-blue-50 transition-colors duration-500">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">HSN/SAC</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">Description (Example)</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-blue-600 uppercase tracking-wider">Total Turnover (₹)</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-blue-600 uppercase tracking-wider">Total Tax (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr><td class="px-6 py-4 text-sm font-mono">998313</td><td class="px-6 py-4 text-sm">IT Consulting and Support Services</td><td class="px-6 py-4 text-sm text-right">3,50,00,000</td><td class="px-6 py-4 text-sm text-right">63,00,000</td></tr>
+                            <tr><td class="px-6 py-4 text-sm font-mono">8471</td><td class="px-6 py-4 text-sm">Computer Hardware & Peripherals</td><td class="px-6 py-4 text-sm text-right">2,10,00,000</td><td class="px-6 py-4 text-sm text-right">37,80,000</td></tr>
+                            <tr><td class="px-6 py-4 text-sm font-mono">9991</td><td class="px-6 py-4 text-sm">Software Development Services</td><td class="px-6 py-4 text-sm text-right">1,50,00,000</td><td class="px-6 py-4 text-sm text-right">27,00,000</td></tr>
+                            <tr><td class="px-6 py-4 text-sm font-mono">3004</td><td class="px-6 py-4 text-sm">Pharmaceutical Products</td><td class="px-6 py-4 text-sm text-right">90,00,000</td><td class="px-6 py-4 text-sm text-right">10,80,000</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <section id="rate" class="tab-content hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">GST Rate-Wise Tax Analysis</h2>
+                <p class="text-lg font-semibold text-blue-600 mb-4" id="rate-period">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
+                <p class="text-gray-600 mb-6 transition-colors duration-500">Breakdown of total tax collected and paid across different GST tax rate slabs.</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-lg transition-colors duration-500">
+                        <h3 class="font-bold text-center text-gray-700 mb-4">Sales/Output Tax by Rate</h3>
+                        <div class="chart-container">
+                            <canvas id="salesRateChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-lg transition-colors duration-500">
+                        <h3 class="font-bold text-center text-gray-700 mb-4">Purchases/ITC by Rate</h3>
+                        <div class="chart-container">
+                            <canvas id="purchaseRateChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="cdn" class="tab-content hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2 transition-colors duration-500">Credit/Debit Note Register</h2>
+                <p class="text-lg font-semibold text-blue-600 mb-4" id="cdn-period">Displaying data for the period: April 1, 2023 - March 31, 2024</p>
+                <p class="text-gray-600 mb-6 transition-colors duration-500">A register of all adjustments (reductions/increases) to tax liability via Credit Notes (Sales/Output) and Debit Notes (Purchases/ITC).</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto transition-colors duration-500">
+                        <h3 class="text-xl font-semibold text-gray-700 mb-4">Credit Notes (Sales Adjustments)</h3>
+                        <p class="text-3xl font-extrabold text-gray-900 mb-2 text-red-600">₹ 8.5 Lac</p>
+                        <p class="text-gray-500 text-sm mb-4">Total reduction in Sales Tax Liability across 12 customers.</p>
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-blue-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-blue-600 uppercase">Customer</th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium text-blue-600 uppercase">CN Value (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr><td class="px-4 py-3 text-sm">V MART RETAIL LTD</td><td class="px-4 py-3 text-sm text-right">3,00,000</td></tr>
+                                <tr><td class="px-4 py-3 text-sm">Times Internet Ltd.</td><td class="px-4 py-3 text-sm text-right">2,50,000</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto transition-colors duration-500">
+                        <h3 class="text-xl font-semibold text-gray-700 mb-4">Debit Notes (Purchase Adjustments)</h3>
+                        <p class="text-3xl font-extrabold text-gray-900 mb-2 text-green-600">₹ 10.2 Lac</p>
+                        <p class="text-gray-500 text-sm mb-4">Total increase in ITC claimed from 7 suppliers.</p>
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-blue-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-blue-600 uppercase">Supplier</th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium text-blue-600 uppercase">DN Value (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr><td class="px-4 py-3 text-sm">INEXUS BIOTECH</td><td class="px-4 py-3 text-sm text-right">5,20,000</td></tr>
+                                <tr><td class="px-4 py-3 text-sm">Calpro Specialties</td><td class="px-4 py-3 text-sm text-right">3,00,000</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+
         </main>
 
         <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4 hidden modal-enter">
@@ -323,10 +393,14 @@
                     { value: "33AAFCD5862R1Z2", label: "33AAFCD5862R1Z2 (Tamil Nadu)" },
                     { value: "07AAFCD5862R1ZX", label: "07AAFCD5862R1ZX (Delhi)" },
                 ],
+                // UPDATED TABS LIST
                 tabs: [
                     { key: "overview", label: "Financial Overview" },
                     { key: "trends", label: "Month-Wise Trends" },
                     { key: "parties", label: "Customer & Supplier Analysis" },
+                    { key: "hsn", label: "HSN/SAC Analysis" },      // NEW
+                    { key: "rate", label: "GST Rate Analysis" },    // NEW
+                    { key: "cdn", label: "Credit/Debit Notes" }, // NEW
                 ],
                 financialData: {
                     "Net Turnover": { fy24: 804377766, fy23: 583693227, format: "currency" },
@@ -346,31 +420,17 @@
                     sales: { labels: ['Karnataka', 'Tamil Nadu', 'Delhi', 'Maharashtra', 'Other'], data: [40, 25, 15, 10, 10] },
                     purchases: { labels: ['Karnataka', 'Delhi', 'Gujarat', 'Tamil Nadu', 'Other'], data: [35, 20, 18, 12, 15] }
                 },
+                rateData: {
+                    salesRates: { labels: ['18%', '12%', '5%', '28%'], data: [55, 25, 15, 5] },
+                    purchaseRates: { labels: ['18%', '12%', '5%', '0%'], data: [45, 30, 20, 5] },
+                },
                 alerts: [
                     { message: "GSTR-1 filing deadline is in 5 days (Apr period)", type: "warning" },
                     { message: "4 GSTR-1 filings were delayed in FY 23-24. Review compliance.", type: "danger" },
                     { message: "Large purchase of ₹2.31 Cr from INEXUS BIOTECH in Q4.", type: "info" }
                 ],
-                customerInvoices: {
-                    'Times Internet Ltd.': [
-                        { id: 'TI/23-24/001', date: '2023-04-10', value: '₹ 58,00,000', status: 'Paid' },
-                        { id: 'TI/23-24/005', date: '2023-08-22', value: '₹ 75,00,000', status: 'Paid' },
-                    ],
-                    'NATIONAL HOUSING BANK': [
-                        { id: 'NHB/23-24/020', date: '2023-09-05', value: '₹ 40,00,000', status: 'Paid' },
-                        { id: 'NHB/23-24/080', date: '2024-02-28', value: '₹ 35,00,000', status: 'Paid', status_risk: 'Irregular' }, // Added risk status for demo
-                    ],
-                },
-                supplierInvoices: {
-                    'INEXUS BIOTECH': [
-                        { id: 'IB/P/04-23', date: '2023-04-15', value: '₹ 45,00,000', status: 'Paid' },
-                        { id: 'IB/P/12-23', date: '2023-12-01', value: '₹ 60,00,000', status: 'Paid' },
-                    ],
-                    'BIMAL AUTO AGENCY': [
-                        { id: 'BAA/B/05-23', date: '2023-05-18', value: '₹ 35,00,000', status: 'Paid', status_risk: 'Irregular' },
-                        { id: 'BAA/B/10-23', date: '2023-10-10', value: '₹ 30,00,000', status: 'Paid' },
-                    ],
-                }
+                customerInvoices: { /* ... invoice data ... */ },
+                supplierInvoices: { /* ... invoice data ... */ }
             };
 
             // --- STATE ---
@@ -381,15 +441,12 @@
             // Get filter inputs and initial values
             const fromDateInput = document.getElementById('from-date');
             const toDateInput = document.getElementById('to-date');
-            const typeFilter = document.getElementById('type-filter');
-            const rateFilter = document.getElementById('rate-filter');
-            const hsnFilter = document.getElementById('hsn-filter');
 
             let currentFromDate = fromDateInput.value;
             let currentToDate = toDateInput.value;
 
 
-            // --- HELPERS ---
+            // --- HELPERS (unchanged) ---
             const formatCurrency = (value) => {
                 const absValue = Math.abs(value);
                 const sign = value < 0 ? '-' : '';
@@ -467,7 +524,7 @@
                 kpiContainer.querySelectorAll('[data-kpi-id]').forEach(card => {
                     const kpiId = card.dataset.kpiId;
                     const data = DB.financialData[kpiId];
-                    const elementId = `kpi-value-${kpiId.replace(/\s/g, '-')}`;
+                    const elementId = `kpi-value-${kpiId.replace(/\s/g, '-').replace(/%/g, 'percent')}`; // Sanitized ID
                     const element = document.getElementById(elementId);
                     
                     if (element) {
@@ -488,7 +545,7 @@
                 }
             };
             
-            // --- RENDER FUNCTIONS ---
+            // --- RENDER FUNCTIONS (updated) ---
             const renderDropdown = () => {
                 const select = document.getElementById('gstin-select');
                 select.innerHTML = DB.GSTINs.map(gst => `<option value="${gst.value}">${gst.label}</option>`).join('');
@@ -507,7 +564,7 @@
             const renderKPIs = () => {
                 const container = document.getElementById('kpi-cards-container');
                 container.innerHTML = Object.entries(DB.financialData).map(([title, data]) => {
-                    const id = title.replace(/\s/g, '-');
+                    const id = title.replace(/\s/g, '-').replace(/%/g, 'percent');
                     return `
                         <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500 hover:shadow-xl transition-shadow duration-300 dark:bg-gray-800" data-kpi-id="${title}">
                             <h3 class="text-md font-medium text-gray-500 mb-2 dark:text-gray-400">${title}</h3>
@@ -527,29 +584,22 @@
                 const formattedFrom = formatter.format(new Date(from));
                 const formattedTo = formatter.format(new Date(to));
                 
-                const typeText = typeFilter.value !== 'all' ? ` (Type: ${typeFilter.options[typeFilter.selectedIndex].text})` : '';
-                const rateText = rateFilter.value !== 'all' ? ` (Rate: ${rateFilter.value}%)` : '';
-                const hsnText = hsnFilter.value !== 'all' ? ` (HSN: ${hsnFilter.value})` : '';
+                const periodText = `Displaying data for the period: ${formattedFrom} - ${formattedTo}`;
 
                 document.querySelectorAll('[id$="-period"]').forEach(el => {
-                    el.textContent = `Displaying data for the period: ${formattedFrom} - ${formattedTo}${typeText}${rateText}${hsnText}`;
+                    el.textContent = periodText;
                 });
             }
             
             // --- CORE FUNCTION TO UPDATE ALL DATA & CHARTS ---
             const renderData = (from, to) => {
                 updatePeriodLabels(from, to);
-                
-                // --- SIMULATION LOGIC ---
-                // In a real app, API calls would fetch aggregated data based on 
-                // fromDate, toDate, typeFilter.value, rateFilter.value, and hsnFilter.value
-                // For this static demo, we simply show a confirmation modal.
-                
+                // In a real app, API calls would fetch data based on date and GSTIN here.
                 renderKPIs();
                 initCharts();
             };
             
-            // --- CHART CREATION ---
+            // --- CHART CREATION (updated with rate charts) ---
             const getChartSharedOptions = () => ({
                 responsive: true,
                 maintainAspectRatio: false,
@@ -582,8 +632,10 @@
 
             const initCharts = () => {
                 const sharedOptions = getChartSharedOptions();
+                const chartColors = ['#3B82F6', '#F97316', '#10B981', '#8B5CF6', '#6B7280', '#EF4444'];
+                const doughnutOptions = { ...sharedOptions, scales: {}, plugins: { ...sharedOptions.plugins, legend: { position: 'right', labels: { color: isDarkMode ? '#A0A0A0' : '#6d7378' } } } };
 
-                // Turnover vs Purchases Chart
+                // --- Overview Tab Charts ---
                 createChart(document.getElementById('turnoverChart').getContext('2d'), {
                     type: 'bar',
                     data: {
@@ -602,7 +654,6 @@
                     }
                 });
 
-                // Gross Margin % Trend Chart
                 createChart(document.getElementById('marginChart').getContext('2d'), {
                     type: 'line',
                     data: {
@@ -617,7 +668,7 @@
                     }
                 });
 
-                // GST Liability vs. ITC Trend Chart
+                // --- Trends Tab Chart ---
                 createChart(document.getElementById('gstTrendChart').getContext('2d'), {
                     type: 'line',
                     data: {
@@ -639,10 +690,7 @@
                     }
                 });
 
-                // State-Wise Charts (Doughnut)
-                const doughnutOptions = { ...sharedOptions, scales: {}, plugins: { ...sharedOptions.plugins, legend: { position: 'right', labels: { color: isDarkMode ? '#A0A0A0' : '#6d7378' } } } };
-                const chartColors = ['#3B82F6', '#F97316', '#10B981', '#8B5CF6', '#6B7280'];
-                
+                // --- Parties Tab Charts (State-Wise) ---
                 createChart(document.getElementById('salesStateChart').getContext('2d'), {
                     type: 'doughnut', data: {
                         labels: DB.stateData.sales.labels,
@@ -656,9 +704,24 @@
                         datasets: [{ data: DB.stateData.purchases.data, backgroundColor: chartColors, borderColor: isDarkMode ? '#1a1a1a' : '#FFF' }]
                     }, options: doughnutOptions
                 });
+
+                // --- Rate Analysis Tab Charts (NEW) ---
+                createChart(document.getElementById('salesRateChart').getContext('2d'), {
+                    type: 'pie', data: {
+                        labels: DB.rateData.salesRates.labels,
+                        datasets: [{ data: DB.rateData.salesRates.data, backgroundColor: chartColors, borderColor: isDarkMode ? '#1a1a1a' : '#FFF' }]
+                    }, options: doughnutOptions
+                });
+
+                createChart(document.getElementById('purchaseRateChart').getContext('2d'), {
+                    type: 'pie', data: {
+                        labels: DB.rateData.purchaseRates.labels,
+                        datasets: [{ data: DB.rateData.purchaseRates.data, backgroundColor: chartColors, borderColor: isDarkMode ? '#1a1a1a' : '#FFF' }]
+                    }, options: doughnutOptions
+                });
             };
             
-            // --- MODAL LOGIC ---
+            // --- MODAL LOGIC (unchanged) ---
             const modal = document.getElementById('modal');
             const modalTitle = document.getElementById('modal-title');
             const modalMessage = document.getElementById('modal-message');
@@ -717,7 +780,7 @@
                 `;
             };
 
-            // --- EVENT HANDLERS & LOGIC ---
+            // --- EVENT HANDLERS & LOGIC (updated) ---
             const handleTabClick = (e) => {
                 const button = e.target.closest('.tab-button');
                 if (!button) return;
@@ -731,6 +794,7 @@
                 document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
                 document.getElementById(tabKey).classList.remove('hidden');
 
+                // Re-render charts when switching to any tab containing a chart
                 if (tabKey !== 'overview') {
                     setTimeout(() => {
                         Object.values(charts).forEach(chart => chart.resize());
@@ -738,46 +802,21 @@
                 }
             };
             
-            const handleFilterChange = () => {
-                // Collect all current filter values
-                const currentFilters = {
-                    fromDate: fromDateInput.value,
-                    toDate: toDateInput.value,
-                    type: typeFilter.value,
-                    rate: rateFilter.value,
-                    hsn: hsnFilter.value
-                };
-                
-                currentFromDate = currentFilters.fromDate;
-                currentToDate = currentFilters.toDate;
+            // Consolidated logic for all global filter changes (Date/GSTIN)
+            const handleGlobalFilterChange = () => {
+                currentFromDate = fromDateInput.value;
+                currentToDate = toDateInput.value;
+                const selectedGSTIN = document.getElementById('gstin-select').value;
+                const gstinLabel = DB.GSTINs.find(g => g.value === selectedGSTIN).label;
 
-                const message = `Dashboard data is being reloaded and filtered based on the new criteria: 
-                                <ul class="list-disc pl-5 mt-3 space-y-1">
-                                    <li>Period: ${currentFilters.fromDate} to ${currentFilters.toDate}</li>
-                                    <li>Type: ${typeFilter.options[typeFilter.selectedIndex].text}</li>
-                                    <li>GST Rate: ${currentFilters.rate}%</li>
-                                    <li>HSN/SAC: ${currentFilters.hsn}</li>
-                                </ul>
-                                <p class="text-sm mt-3 italic">All charts, KPIs, and tables below will update to reflect this filtered dataset.</p>`;
-                
                 showModal(
-                    "Data Filtering Simulation", 
-                    message
+                    "Global Data Filtering Simulation", 
+                    `The dashboard is refreshing data for the period **${currentFromDate} to ${currentToDate}** and filtering by **${gstinLabel}**.`,
+                    `<p class="text-sm italic">In a production environment, all displayed data and charts are now recalculated based on this filter selection.</p>`
                 );
                 
                 renderData(currentFromDate, currentToDate);
             };
-
-            const handleGSTINChange = (e) => {
-                const selectedGSTIN = e.target.value;
-                const gstinLabel = DB.GSTINs.find(g => g.value === selectedGSTIN).label;
-                showModal(
-                    "Data Loading Simulation", 
-                    `Dashboard refresh requested! Data for GSTIN ${gstinLabel} would be loaded here.`,
-                    `<p class="text-sm">In a real application, the entire dashboard data (KPIs, charts, tables) would now be fetched and updated for this specific GSTIN.</p>`
-                );
-            };
-
 
             const handlePartyClick = (e) => {
                 const row = e.target.closest('tr');
@@ -812,25 +851,12 @@
                 if (activePoints.length === 0) return;
 
                 const dataPoint = activePoints[0];
-                const month = chart.data.labels[dataPoint.index];
+                const label = chart.data.labels[dataPoint.index];
                 
-                const title = `Monthly Transaction Breakdown: ${month}`;
-                const message = `Detailed summary of the transactions contributing to the monthly figures.`;
-                const contentHTML = `
-                    <div class="flex justify-between p-3 border-b dark:border-gray-600">
-                        <span class="font-semibold">Turnover (Cr):</span>
-                        <span>${DB.monthlyData.turnover[dataPoint.index]} Cr</span>
-                    </div>
-                    <div class="flex justify-between p-3 border-b dark:border-gray-600">
-                        <span class="font-semibold">Purchases (Cr):</span>
-                        <span>${DB.monthlyData.purchases[dataPoint.index]} Cr</span>
-                    </div>
-                    <div class="flex justify-between p-3 border-b dark:border-gray-600">
-                        <span class="font-semibold">ITC Available (Cr):</span>
-                        <span>${DB.monthlyData.itcAvailable[dataPoint.index]} Cr</span>
-                    </div>
-                    <p class="text-sm text-center pt-4 italic">In a production dashboard, a detailed list of all invoices and bills for ${month} within the selected filter criteria would appear here.</p>
-                `;
+                const title = (chartId.includes('rate') ? "Tax Rate Breakdown" : chartId.includes('Trend') ? "Monthly Transaction Breakdown" : "Data Point Detail");
+                const message = `Detailed data for **${label}** applied across the current filters.`;
+
+                const contentHTML = `<p class="text-sm italic pt-4">This modal would show a detailed list of transactions, invoices, or HSN codes contributing to the selected chart segment/month.</p>`;
                 
                 showModal(title, message, contentHTML);
             };
@@ -878,20 +904,17 @@
 
                 // Event Listeners
                 document.getElementById('tabs-container').addEventListener('click', handleTabClick);
-                document.getElementById('gstin-select').addEventListener('change', handleGSTINChange);
                 document.getElementById('modal-close-btn').addEventListener('click', hideModal);
                 document.getElementById('modal-ok-btn').addEventListener('click', hideModal);
                 document.getElementById('theme-toggle').addEventListener('click', toggleDarkMode);
                 document.getElementById('alert-btn').addEventListener('click', handleAlertClick);
 
-                // Add listeners to ALL new filter inputs
-                fromDateInput.addEventListener('change', handleFilterChange);
-                toDateInput.addEventListener('change', handleFilterChange);
-                typeFilter.addEventListener('change', handleFilterChange);
-                rateFilter.addEventListener('change', handleFilterChange);
-                hsnFilter.addEventListener('change', handleFilterChange);
+                // Attach global filter listeners to the consolidated handler
+                fromDateInput.addEventListener('change', handleGlobalFilterChange);
+                toDateInput.addEventListener('change', handleGlobalFilterChange);
+                document.getElementById('gstin-select').addEventListener('change', handleGlobalFilterChange);
 
-
+                // Chart clicks
                 document.getElementById('customer-table').addEventListener('click', handlePartyClick);
                 document.getElementById('supplier-table').addEventListener('click', handlePartyClick);
                 
